@@ -582,7 +582,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2093948048}
   - component: {fileID: 2093948049}
-  - component: {fileID: 2093948050}
   m_Layer: 0
   m_Name: GraphCreator
   m_TagString: Untagged
@@ -665,16 +664,3 @@ MonoBehaviour:
   AIPrefab: {fileID: 3335252099827390383, guid: 26a8b6ab530171d45888f23a69315f94, type: 3}
   spawner: 1
   limitAI: 35
---- !u!114 &2093948050
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2093948047}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea7d7495833204790ba1d3a8755397f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ConversionMode: 1
