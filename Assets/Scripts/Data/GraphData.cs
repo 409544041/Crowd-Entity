@@ -7,4 +7,5 @@ using Unity.Mathematics;
 public struct GraphData : IComponentData
 {
     public int graphIndex;
+    public int nodeIndex;
 }

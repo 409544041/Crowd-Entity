@@ -9,10 +9,16 @@ using Unity.Transforms;
 [UpdateInGroup(typeof(AIGroup))]
 public partial class AIGraphMove : SystemBase
 {
+
+
     protected override void OnUpdate()
     {
+
         var buffer = GetAdjBuffers(0);
-        var bufferReadOnly = buffer.AsReadOnly();
+        var bufferReadOnly0 = buffer.AsReadOnly();
+
+        var buffer1 = GetAdjBuffers(1);
+        var bufferReadOnly1 = buffer1.AsReadOnly();
 
         var bufferVertex = GetVertexBuffer();
         var bufferVertexReadOnly = bufferVertex.AsReadOnly();
@@ -20,40 +26,63 @@ public partial class AIGraphMove : SystemBase
         var entityCommandBufferParallel = entityCommandBuffer.AsParallelWriter();
         Entities
             .WithAll<GraphTag>()
-            .ForEach((Entity entity,int entityInQueryIndex, ref GraphData graphData, ref PhysicsVelocity physicsVelocity, in Translation translation) =>
+            .ForEach((Entity entity, int entityInQueryIndex, ref GraphData graphData, ref PhysicsVelocity physicsVelocity, 
+                in Translation translation, in SpeedData speedData, in AvoidanceData avoidanceData) =>
             {
-                var distance = math.distance(bufferVertexReadOnly[graphData.graphIndex].translation.xz, translation.Value.xz);
-                if (distance <= 0.1f)
+                NativeArray<AdjBuffer>.ReadOnly bufferReadOnly;
+                if (graphData.graphIndex == 0)
                 {
-                    if (graphData.graphIndex + 1 > bufferReadOnly.Length)
+                    bufferReadOnly = bufferReadOnly0;
+                }
+                else if (graphData.graphIndex == 1)
+                {
+                    bufferReadOnly = bufferReadOnly1;
+                }
+                else
+                {
+                    bufferReadOnly = bufferReadOnly0;
+                }
+                var distance = math.distance(bufferVertexReadOnly[bufferReadOnly[graphData.nodeIndex].direction].translation.xz, translation.Value.xz);
+                if (distance <= (avoidanceData.isAvoidanceRun ? avoidanceData.distance  : 2f))
+                {
+                    if (graphData.nodeIndex + 1 > bufferReadOnly.Length)
                     {
                         entityCommandBufferParallel.RemoveComponent<GraphTag>(entityInQueryIndex, entity);
                         physicsVelocity.Linear = float3.zero;
                         physicsVelocity.Angular = float3.zero;
                         return;
                     }
-                     graphData.graphIndex = bufferReadOnly[graphData.graphIndex + 1].direction;
-                    
+                    // loop
+                    if (bufferReadOnly[graphData.nodeIndex + 1].direction == bufferReadOnly[0].direction)
+                    {
+                        graphData.nodeIndex = 0;
+                    }
+                    else
+                    {
+                        ++graphData.nodeIndex;
+                    }
+
                 }
 
-                    var dir = bufferVertexReadOnly[graphData.graphIndex ].translation - translation.Value;
-                    dir.y = 0;
-                    dir = math.normalize(dir);
-                    var y = physicsVelocity.Linear.y;
-                    dir *= 4f;
-                    dir = math.lerp(physicsVelocity.Linear, dir,0.1f);
-                    physicsVelocity.Linear = dir;
-                    physicsVelocity.Linear.y = y;
-                    
-                
-                
-                
-            }).WithoutBurst().ScheduleParallel();
+                float3 dir = bufferVertexReadOnly[bufferReadOnly[graphData.nodeIndex].direction].translation - translation.Value;
+                dir.y = 0;
+                dir = math.normalize(dir);
+                float y = physicsVelocity.Linear.y;
+                dir *= speedData.speed;
+                dir = math.lerp(physicsVelocity.Linear, dir, 0.1f);
+                physicsVelocity.Linear = dir;
+                physicsVelocity.Linear.y = y;
+
+
+
+
+            }).WithBurst().ScheduleParallel();
 
         Dependency.Complete();
         entityCommandBuffer.Playback(EntityManager);
         entityCommandBuffer.Dispose();
         buffer.Dispose();
+        buffer1.Dispose();
         bufferVertex.Dispose();
     }
 

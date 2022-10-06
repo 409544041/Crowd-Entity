@@ -24,6 +24,8 @@ public class GraphCreator : MonoBehaviour
 
     [SerializeField] bool spawner;
 
+    [SerializeField] int limitAI;
+    int AICount = 1;
     void Start()
     {
 
@@ -49,22 +51,31 @@ public class GraphCreator : MonoBehaviour
     {
         if (!spawner)
         {
-            CreateEntityAI(0);
+            CreateEntityAI();
         }
         while (spawner)
         {
-            CreateEntityAI(UnityEngine.Random.Range(0, adjBuffers[0].myList.Length - 1));
+            CreateEntityAI();
+            if (++AICount > limitAI)
+            {
+
+                yield break;
+            }
             yield return new WaitForSeconds(0.5f);
         }
     }
 
-    void CreateEntityAI(int index)
+    void CreateEntityAI()
     {
         EntityCommandBuffer ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
         var entity = ecb.Instantiate(EntityAI);
-        ecb.AddComponent(entity, new GraphData { graphIndex = index });
+        int graphIndex = UnityEngine.Random.Range(0, adjBuffers.Count);
+        int index = UnityEngine.Random.Range(0, adjBuffers[graphIndex].myList.Length - 1);
+        ecb.AddComponent(entity, new GraphData { graphIndex = graphIndex, nodeIndex = index });
         ecb.AddComponent(entity, new GraphTag { });
-        ecb.SetComponent<Translation>(entity, new Translation { Value = vertexDatas[adjBuffers[0].myList[index].direction].translation });
+        ecb.AddComponent(entity, new SpeedData { speed = UnityEngine.Random.Range(3.5f, 4.5f) });
+        ecb.AddComponent(entity, new AvoidanceData { distance = 3f, isAvoidanceRun = false, baseDistance = 3f });
+        ecb.SetComponent<Translation>(entity, new Translation { Value = vertexDatas[adjBuffers[graphIndex].myList[index].direction].translation });
         ecb.Playback(entityManager);
         ecb.Dispose();
     }

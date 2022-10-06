@@ -5,7 +5,8 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Transforms;
-[UpdateAfter(typeof(FreezeRotationSystem))]
+
+[UpdateInGroup(typeof(AIGroup))]
 public partial class RotationSystem : SystemBase
 {
     protected override void OnUpdate()

@@ -5,7 +5,7 @@ using Unity.Physics;
 using UnityEngine;
 using Unity.Physics.GraphicsIntegration;
 using Unity.Transforms;
-
+[UpdateBefore(typeof(AIGroup))]
 public partial class FreezeRotationSystem : SystemBase
 {
     protected override void OnUpdate()
