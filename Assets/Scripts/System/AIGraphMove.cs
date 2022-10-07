@@ -43,7 +43,15 @@ public partial class AIGraphMove : SystemBase
                     bufferReadOnly = bufferReadOnly0;
                 }
                 var distance = math.distance(bufferVertexReadOnly[bufferReadOnly[graphData.nodeIndex].direction].translation.xz, translation.Value.xz);
-                if (distance <= (avoidanceData.isAvoidanceRun ? avoidanceData.distance  : 2f))
+
+                var nextNodeDir = bufferVertexReadOnly[bufferReadOnly[graphData.nodeIndex + 1].direction].translation;
+                var currNodeDir = bufferVertexReadOnly[bufferReadOnly[graphData.nodeIndex].direction].translation;
+
+                var tansfromToCurrNode = currNodeDir - translation.Value;
+
+                var I_Dot = math.dot(math.normalize(tansfromToCurrNode), math.normalize(nextNodeDir - currNodeDir));
+
+                if (distance <= (avoidanceData.isAvoidanceRun ? avoidanceData.distance  : 2f) || I_Dot < -0.5f)
                 {
                     if (graphData.nodeIndex + 1 > bufferReadOnly.Length)
                     {

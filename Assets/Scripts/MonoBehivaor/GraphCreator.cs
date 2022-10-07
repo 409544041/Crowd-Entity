@@ -24,7 +24,7 @@ public class GraphCreator : MonoBehaviour
 
     [SerializeField] bool spawner;
 
-    [SerializeField] int limitAI;
+    [SerializeField] public int limitAI;
     int AICount = 1;
     void Start()
     {
@@ -74,7 +74,7 @@ public class GraphCreator : MonoBehaviour
         ecb.AddComponent(entity, new GraphData { graphIndex = graphIndex, nodeIndex = index });
         ecb.AddComponent(entity, new GraphTag { });
         ecb.AddComponent(entity, new SpeedData { speed = UnityEngine.Random.Range(3.5f, 4.5f) });
-        ecb.AddComponent(entity, new AvoidanceData { distance = 3f, isAvoidanceRun = false, baseDistance = 3f });
+        ecb.AddComponent(entity, new AvoidanceData { distance = 1.5f, isAvoidanceRun = false, baseDistance = 1.5f });
         ecb.SetComponent<Translation>(entity, new Translation { Value = vertexDatas[adjBuffers[graphIndex].myList[index].direction].translation });
         ecb.Playback(entityManager);
         ecb.Dispose();

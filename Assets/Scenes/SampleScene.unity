@@ -270,7 +270,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 24.66
+  orthographic size: 73.98
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -554,7 +554,7 @@ Transform:
   m_GameObject: {fileID: 2064377348}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.7798805, y: 0, z: 3.8}
-  m_LocalScale: {x: 4.973952, y: 1.28, z: 6.78528}
+  m_LocalScale: {x: 15, y: 1.28, z: 21}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -617,37 +617,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   vertexDatas:
   - translation:
-      x: -14.5
+      x: -43.5
       y: 1
-      z: -17.5
+      z: -52.5
   - translation:
-      x: 14.5
+      x: 43.5
       y: 1
-      z: -17.5
+      z: -52.5
   - translation:
-      x: 14.5
+      x: 43.5
       y: 1
-      z: 23.5
+      z: 70.5
   - translation:
-      x: -14.5
+      x: -43.5
       y: 1
-      z: 23.5
+      z: 70.5
   - translation:
-      x: -19.5
+      x: -58.5
       y: 1
-      z: -24.5
+      z: -73.5
   - translation:
-      x: 19.5
+      x: 58.5
       y: 1
-      z: -24.5
+      z: -73.5
   - translation:
-      x: 19.5
+      x: 58.5
       y: 1
-      z: 30.5
+      z: 91.5
   - translation:
-      x: -19.5
+      x: -58.5
       y: 1
-      z: 30.5
+      z: 91.5
   adjBuffers:
   - myList:
     - direction: 0
@@ -663,4 +663,4 @@ MonoBehaviour:
     - direction: 7
   AIPrefab: {fileID: 3335252099827390383, guid: 26a8b6ab530171d45888f23a69315f94, type: 3}
   spawner: 1
-  limitAI: 35
+  limitAI: 1000

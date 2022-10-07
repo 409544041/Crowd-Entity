@@ -32,8 +32,8 @@ public partial class AvoidanceSystem : SystemBase
 
     protected override void OnUpdate()
     {
-        NativeList<Translation> translations = new NativeList<Translation>(300,Allocator.TempJob);
-        NativeList<AvoidanceDatasEnemy> avoidanceDatasEnemy = new NativeList<AvoidanceDatasEnemy>(300, Allocator.TempJob);
+        NativeList<Translation> translations = new NativeList<Translation>(GraphCreator.instance.limitAI,Allocator.TempJob);
+        NativeList<AvoidanceDatasEnemy> avoidanceDatasEnemy = new NativeList<AvoidanceDatasEnemy>(GraphCreator.instance.limitAI, Allocator.TempJob);
 
         EntityQuery entityQuery= GetEntityQuery(typeof(GraphTag));
 
@@ -57,16 +57,23 @@ public partial class AvoidanceSystem : SystemBase
                 if (math.distance(translationParallel[i].Value, translation.Value) <= avoidanceData.distance)
                 {
                     var angle = math.dot(math.normalize(physicsVelocity.Linear), math.normalize(translationParallel[i].Value - translation.Value));
-                    //Debug.Log("menizle girdim açým : " + angel + " Ben: " + entity.Index);
-                    if (angle > -0.3f && avoidanceDatasEnemyParallel[i].speedData.speed < speedData.speed)
+
+                    if (angle > -0.7f && avoidanceDatasEnemyParallel[i].speedData.speed < speedData.speed)
                     {
                         if (!avoidanceData.isAvoidanceRun)
                         {
                             avoidanceData.isAvoidanceRun = true;
-                            avoidanceData.distance = 4f;
+                            avoidanceData.distance = 2.5f;
                             avoidanceData.Velocity = physicsVelocity.Linear;
-                            //Debug.Log("Avoidance sistemi baþladý Ben :" + entity.Index);
-
+                        }
+                        else
+                        {
+                            var dir = math.normalize(physicsVelocity.Linear.xz);
+                            float3 dir3 = float3.zero;
+                            dir3.xz = dir;
+                            dir3.y = 0;
+                            dir3 = Utils.Rotate(dir3, angle * 2);
+                            physicsVelocity.Linear = dir3 * speedData.speed;
                         }
                     }
                     else
@@ -76,19 +83,7 @@ public partial class AvoidanceSystem : SystemBase
                             avoidanceData.isAvoidanceRun = false;
                             avoidanceData.distance = avoidanceData.baseDistance;
                             avoidanceData.Velocity = float3.zero;
-                            //Debug.Log("Avoidance sistemi bitti Ben :" + entity.Index);
-
                         }
-                    }
-                    if (avoidanceData.isAvoidanceRun)
-                    {
-                        var dir = math.normalize(physicsVelocity.Linear.xz);
-                        float3 dir3 = float3.zero;
-                        dir3.xz = dir;
-                        dir3.y = 0;
-                        dir3 = Utils.Rotate(dir3, angle* 2);
-                        physicsVelocity.Linear = dir3 * speedData.speed;
-
                     }
                 }
             }
